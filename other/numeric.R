@@ -7,4 +7,4 @@ ext = 0.05
 cov.obj = cov_basis(data$t, data$y, data$r, r, lambda, ext, 2)
 C_hat <- cov.obj$C
 auxmat = auxiliary_mat(r, data$t)
-DP_fragment(data$t, data$y, data$r, 5, 0.0001, 1, 0.05, 2, 10)
+DP_fragment(data$t, data$y, data$r, 5, 0.1, 1, 0.05, 2, 10)
