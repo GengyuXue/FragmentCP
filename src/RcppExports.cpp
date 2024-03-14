@@ -13,7 +13,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // expM
 arma::mat expM(const arma::mat& X, const arma::mat& S);
-RcppExport SEXP _FragmentMat_expM(SEXP XSEXP, SEXP SSEXP) {
+RcppExport SEXP _FragmentCP_expM(SEXP XSEXP, SEXP SSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 // RgradQ
 arma::mat RgradQ(const arma::mat& Lt, const arma::mat& Lr, const arma::mat& L, const arma::mat& B, const arma::mat& U, const arma::mat& V, const arma::mat& W, const double lam, const arma::vec& weight);
-RcppExport SEXP _FragmentMat_RgradQ(SEXP LtSEXP, SEXP LrSEXP, SEXP LSEXP, SEXP BSEXP, SEXP USEXP, SEXP VSEXP, SEXP WSEXP, SEXP lamSEXP, SEXP weightSEXP) {
+RcppExport SEXP _FragmentCP_RgradQ(SEXP LtSEXP, SEXP LrSEXP, SEXP LSEXP, SEXP BSEXP, SEXP USEXP, SEXP VSEXP, SEXP WSEXP, SEXP lamSEXP, SEXP weightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // RhessianQ
 Rcpp::List RhessianQ(const arma::mat& Lt, const arma::mat& Lr, const arma::mat& S, const arma::mat& B, const arma::mat& U, const arma::mat& V, const arma::mat& W, const double lam, const arma::vec& weight, const arma::mat& X);
-RcppExport SEXP _FragmentMat_RhessianQ(SEXP LtSEXP, SEXP LrSEXP, SEXP SSEXP, SEXP BSEXP, SEXP USEXP, SEXP VSEXP, SEXP WSEXP, SEXP lamSEXP, SEXP weightSEXP, SEXP XSEXP) {
+RcppExport SEXP _FragmentCP_RhessianQ(SEXP LtSEXP, SEXP LrSEXP, SEXP SSEXP, SEXP BSEXP, SEXP USEXP, SEXP VSEXP, SEXP WSEXP, SEXP lamSEXP, SEXP weightSEXP, SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -64,7 +64,7 @@ END_RCPP
 }
 // deriv_fourier
 arma::mat deriv_fourier(const int& K, const arma::vec& domain, const arma::vec& grid, const int& order);
-RcppExport SEXP _FragmentMat_deriv_fourier(SEXP KSEXP, SEXP domainSEXP, SEXP gridSEXP, SEXP orderSEXP) {
+RcppExport SEXP _FragmentCP_deriv_fourier(SEXP KSEXP, SEXP domainSEXP, SEXP gridSEXP, SEXP orderSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -78,7 +78,7 @@ END_RCPP
 }
 // evaluate_basis
 arma::mat evaluate_basis(const int& K, const arma::vec& domain, const arma::vec& grid);
-RcppExport SEXP _FragmentMat_evaluate_basis(SEXP KSEXP, SEXP domainSEXP, SEXP gridSEXP) {
+RcppExport SEXP _FragmentCP_evaluate_basis(SEXP KSEXP, SEXP domainSEXP, SEXP gridSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -91,7 +91,7 @@ END_RCPP
 }
 // auxiliary_mat
 Rcpp::List auxiliary_mat(const int& r, const arma::mat& Lt);
-RcppExport SEXP _FragmentMat_auxiliary_mat(SEXP rSEXP, SEXP LtSEXP) {
+RcppExport SEXP _FragmentCP_auxiliary_mat(SEXP rSEXP, SEXP LtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -103,7 +103,7 @@ END_RCPP
 }
 // minimizeQ
 arma::mat minimizeQ(const arma::mat& Lt, const arma::mat& Lr, const Rcpp::List& auxmat, const double lambda, const arma::vec& weight, const arma::mat& L0, const int& maxIt);
-RcppExport SEXP _FragmentMat_minimizeQ(SEXP LtSEXP, SEXP LrSEXP, SEXP auxmatSEXP, SEXP lambdaSEXP, SEXP weightSEXP, SEXP L0SEXP, SEXP maxItSEXP) {
+RcppExport SEXP _FragmentCP_minimizeQ(SEXP LtSEXP, SEXP LrSEXP, SEXP auxmatSEXP, SEXP lambdaSEXP, SEXP weightSEXP, SEXP L0SEXP, SEXP maxItSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -120,7 +120,7 @@ END_RCPP
 }
 // minimizeL
 arma::mat minimizeL(const arma::mat& Lt, const arma::mat& Lr, const Rcpp::List& auxmat, const double& lambda, const arma::vec& weight);
-RcppExport SEXP _FragmentMat_minimizeL(SEXP LtSEXP, SEXP LrSEXP, SEXP auxmatSEXP, SEXP lambdaSEXP, SEXP weightSEXP) {
+RcppExport SEXP _FragmentCP_minimizeL(SEXP LtSEXP, SEXP LrSEXP, SEXP auxmatSEXP, SEXP lambdaSEXP, SEXP weightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -135,7 +135,7 @@ END_RCPP
 }
 // C_hat
 arma::mat C_hat(const arma::mat& Lt, const arma::mat& Lr, const Rcpp::List& auxmat, const double lambda, const arma::vec& weight, const int& maxIt);
-RcppExport SEXP _FragmentMat_C_hat(SEXP LtSEXP, SEXP LrSEXP, SEXP auxmatSEXP, SEXP lambdaSEXP, SEXP weightSEXP, SEXP maxItSEXP) {
+RcppExport SEXP _FragmentCP_C_hat(SEXP LtSEXP, SEXP LrSEXP, SEXP auxmatSEXP, SEXP lambdaSEXP, SEXP weightSEXP, SEXP maxItSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -151,7 +151,7 @@ END_RCPP
 }
 // cov_basis
 Rcpp::List cov_basis(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& Lr, const int& r, const double& lambda, const double& ext, const int& maxIt);
-RcppExport SEXP _FragmentMat_cov_basis(SEXP LtSEXP, SEXP LySEXP, SEXP LrSEXP, SEXP rSEXP, SEXP lambdaSEXP, SEXP extSEXP, SEXP maxItSEXP) {
+RcppExport SEXP _FragmentCP_cov_basis(SEXP LtSEXP, SEXP LySEXP, SEXP LrSEXP, SEXP rSEXP, SEXP lambdaSEXP, SEXP extSEXP, SEXP maxItSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -168,7 +168,7 @@ END_RCPP
 }
 // DP_fragment
 Rcpp::List DP_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& Lr, const int& r, const double& lambda, const double& xi, const double& ext, const int& maxIt, const int& Delta);
-RcppExport SEXP _FragmentMat_DP_fragment(SEXP LtSEXP, SEXP LySEXP, SEXP LrSEXP, SEXP rSEXP, SEXP lambdaSEXP, SEXP xiSEXP, SEXP extSEXP, SEXP maxItSEXP, SEXP DeltaSEXP) {
+RcppExport SEXP _FragmentCP_DP_fragment(SEXP LtSEXP, SEXP LySEXP, SEXP LrSEXP, SEXP rSEXP, SEXP lambdaSEXP, SEXP xiSEXP, SEXP extSEXP, SEXP maxItSEXP, SEXP DeltaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -187,7 +187,7 @@ END_RCPP
 }
 // rcpp_hello_world
 List rcpp_hello_world();
-RcppExport SEXP _FragmentMat_rcpp_hello_world() {
+RcppExport SEXP _FragmentCP_rcpp_hello_world() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -197,22 +197,22 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_FragmentMat_expM", (DL_FUNC) &_FragmentMat_expM, 2},
-    {"_FragmentMat_RgradQ", (DL_FUNC) &_FragmentMat_RgradQ, 9},
-    {"_FragmentMat_RhessianQ", (DL_FUNC) &_FragmentMat_RhessianQ, 10},
-    {"_FragmentMat_deriv_fourier", (DL_FUNC) &_FragmentMat_deriv_fourier, 4},
-    {"_FragmentMat_evaluate_basis", (DL_FUNC) &_FragmentMat_evaluate_basis, 3},
-    {"_FragmentMat_auxiliary_mat", (DL_FUNC) &_FragmentMat_auxiliary_mat, 2},
-    {"_FragmentMat_minimizeQ", (DL_FUNC) &_FragmentMat_minimizeQ, 7},
-    {"_FragmentMat_minimizeL", (DL_FUNC) &_FragmentMat_minimizeL, 5},
-    {"_FragmentMat_C_hat", (DL_FUNC) &_FragmentMat_C_hat, 6},
-    {"_FragmentMat_cov_basis", (DL_FUNC) &_FragmentMat_cov_basis, 7},
-    {"_FragmentMat_DP_fragment", (DL_FUNC) &_FragmentMat_DP_fragment, 9},
-    {"_FragmentMat_rcpp_hello_world", (DL_FUNC) &_FragmentMat_rcpp_hello_world, 0},
+    {"_FragmentCP_expM", (DL_FUNC) &_FragmentCP_expM, 2},
+    {"_FragmentCP_RgradQ", (DL_FUNC) &_FragmentCP_RgradQ, 9},
+    {"_FragmentCP_RhessianQ", (DL_FUNC) &_FragmentCP_RhessianQ, 10},
+    {"_FragmentCP_deriv_fourier", (DL_FUNC) &_FragmentCP_deriv_fourier, 4},
+    {"_FragmentCP_evaluate_basis", (DL_FUNC) &_FragmentCP_evaluate_basis, 3},
+    {"_FragmentCP_auxiliary_mat", (DL_FUNC) &_FragmentCP_auxiliary_mat, 2},
+    {"_FragmentCP_minimizeQ", (DL_FUNC) &_FragmentCP_minimizeQ, 7},
+    {"_FragmentCP_minimizeL", (DL_FUNC) &_FragmentCP_minimizeL, 5},
+    {"_FragmentCP_C_hat", (DL_FUNC) &_FragmentCP_C_hat, 6},
+    {"_FragmentCP_cov_basis", (DL_FUNC) &_FragmentCP_cov_basis, 7},
+    {"_FragmentCP_DP_fragment", (DL_FUNC) &_FragmentCP_DP_fragment, 9},
+    {"_FragmentCP_rcpp_hello_world", (DL_FUNC) &_FragmentCP_rcpp_hello_world, 0},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_FragmentMat(DllInfo *dll) {
+RcppExport void R_init_FragmentCP(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

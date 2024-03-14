@@ -1,3 +1,3 @@
-useDynLib(FragmentMat, .registration=TRUE)
+useDynLib(FragmentCP, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
 exportPattern("^[[:alpha:]]+")
