@@ -185,16 +185,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _FragmentCP_rcpp_hello_world() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_FragmentCP_expM", (DL_FUNC) &_FragmentCP_expM, 2},
@@ -208,7 +198,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_FragmentCP_C_hat", (DL_FUNC) &_FragmentCP_C_hat, 6},
     {"_FragmentCP_cov_basis", (DL_FUNC) &_FragmentCP_cov_basis, 7},
     {"_FragmentCP_DP_fragment", (DL_FUNC) &_FragmentCP_DP_fragment, 9},
-    {"_FragmentCP_rcpp_hello_world", (DL_FUNC) &_FragmentCP_rcpp_hello_world, 0},
     {NULL, NULL, 0}
 };
 

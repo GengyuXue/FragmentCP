@@ -45,7 +45,3 @@ DP_fragment <- function(Lt, Ly, Lr, r, lambda, xi, ext, maxIt, Delta) {
     .Call(`_FragmentCP_DP_fragment`, Lt, Ly, Lr, r, lambda, xi, ext, maxIt, Delta)
 }
 
-rcpp_hello_world <- function() {
-    .Call(`_FragmentCP_rcpp_hello_world`)
-}
-
