@@ -50,5 +50,6 @@ Rcpp::List DP_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat
   }
   //outList["C_list"] = C_final;
   outList["partition"] = partition.subvec(1,n);
+  outList["bestvalue"] = bestvalue.subvec(1,n);
   return outList;
 }
