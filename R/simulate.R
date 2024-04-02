@@ -14,7 +14,7 @@ fragment_data <- function(mu = 0, cov = periodic_cov_fct, r = 5, sigma, n = 100,
     else if(length(mu) == 1) 
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
-    y0 <- mui + gaussian_process(periodic_cov_fct, 1, tobs, r, sigma)
+    y0 <- mui + gaussian_process(cov, 1, tobs, r, sigma)
     return(c(y0))
   }))
   Ly <- Ly0 + matrix(rnorm(n = n*m, sd = sigma_epsilon), n, m)
@@ -27,8 +27,20 @@ fragment_data <- function(mu = 0, cov = periodic_cov_fct, r = 5, sigma, n = 100,
 }
 
 
+#dist_mat = dist(1:r, method = "manhattan", diag = T, upper = T)
+#C_mat = as.matrix(2^(-dist_mat - 5/2)) + diag(1.5^(1-(1:r)))
+
 #' @export
-periodic_cov_fct <- function(tObs, r = 5){
+periodic_cov_fct1 <- function(tObs, r = 5){
+  dist_mat = dist(1:r, method = "manhattan", diag = T, upper = T)
+  C_mat = as.matrix(2^(-dist_mat - 5/2)) + diag(1.5^(1-(1:r)))
+  temp = evaluate_basis(r, c(0,1), tObs)
+  C = temp %*% C_mat %*% t(temp)
+  return(C)
+}
+
+#' @export
+periodic_cov_fct2 <- function(tObs, r = 5){
   dist_mat = dist(1:r, method = "manhattan", diag = T, upper = T)
   C_mat = as.matrix(2^(-dist_mat - 5/2)) + diag(1.5^(1-(1:r)))
   temp = evaluate_basis(r, c(0,1), tObs)
@@ -37,6 +49,22 @@ periodic_cov_fct <- function(tObs, r = 5){
 }
 
 
+shrink <- function(Lt,ext){
+  ext + (1-ext*2)*Lt
+}
+
+#' @export
+predict_cov <- function(grids, C_mat, ext){
+  r <- dim(C_mat)[1]
+  if(ext > 0) grids <- shrink(grids, ext)
+  B <- evaluate_basis(r, c(0,1), grid = grids)
+  return(B %*% C_mat %*% t(B))
+}
+
+# white_fct <- function(tObs){
+#   C = diag(rep(1, length(tObs)))
+#   return(C)
+# }
 
 
 #' @export

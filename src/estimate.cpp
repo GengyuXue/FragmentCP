@@ -187,7 +187,7 @@ Rcpp::List cov_basis(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& 
     arma::mat basis_mat = evaluate_basis(r, domain, ls);
     Lp.cols(i*m, (i+1)*m-1) = basis_mat * C * basis_mat.t();
   }
-  double error = arma::norm(Lr - Lp, "fro");
+  double error = arma::norm(Lr - Lp, "fro")/(m*m);
   outList["C"] = C;
   outList["error"] = error;
   //outList["Lr"] = Lr;
