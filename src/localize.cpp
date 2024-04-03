@@ -19,7 +19,7 @@ Rcpp::List DP_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat
     bestvalue(i) = R_PosInf;
     for(int l = 1; l < i+1; ++l){
       //Rcpp::Rcout << "l is" << std::endl << l << std::endl;
-      if (((i-l+1) >= (xi/m)) && ((i-l+1) > Delta)){
+      if ((i-l+1) > Delta){
         arma::mat Lt_new = Lt.rows((l-1), (i-1));
         arma::mat Ly_new = Ly.rows((l-1), (i-1));
         arma::mat Lr_new = Lr.cols((l-1)*m, i*m-1);

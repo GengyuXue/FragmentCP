@@ -4,7 +4,8 @@ output: html_document
 date: "2024-04-03"
 ---
 ```{r}
-lambda = 0.0001
+lambda = 0.00005
+# lambda = 0.0001
 # lambda = 0
 ext = 0.05
 maxIt = 1
@@ -18,8 +19,8 @@ regular_grid = seq(0.05, 0.95, length.out = 50)
 
 Simulate data: 
 ```{r}
-data1 = temp_fragment_data3(mu = 0, r = r1, sigma1, n = 100, m = 20, sigma_epsilon = 0.1, domain = c(0, 1), delta = 0.5)
-data2 = temp_fragment_data6(mu = 0, r = r2, sigma2, n = 100, m = 20, sigma_epsilon = 0.1, domain = c(0, 1), delta = 0.5)
+data1 = temp_fragment_data6(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.1, domain = c(0, 1), delta = 0.5)
+data2 = temp_fragment_data5(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.1, domain = c(0, 1), delta = 0.5)
 data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
 ```
 
@@ -29,10 +30,15 @@ cov.obj1 = cov_basis(data1$t, data1$y, data1$r, r1, lambda, ext, maxIt) # estima
 C_est1 <- cov.obj1$C
 C_est1
 cov_est1 = predict_cov(regular_grid, C_est1)
+cov.obj1$error
 # obtain the true covariance function
-dist_mat = dist(1:r1, method = "manhattan", diag = T, upper = T)
-C_1 <-  matrix(0, nrow = r1, ncol = r1)
-diag(C_1) <- (1:r1)^(-1)
+# dist_mat = dist(1:r1, method = "manhattan", diag = T, upper = T)
+
+C_1 = matrix(0, nrow = r1, ncol = r1)
+diag(C_1) = seq(from = 20, by = -6, length.out = r1)
+
+# C_1 <-  matrix(0, nrow = r1, ncol = r1)
+# diag(C_1) <- (1:r1)^(-1)
 
 #C_1 <- as.matrix(2^(-dist_mat - 5/2)) + diag(1.5^(1-(1:r1)))
 C_1
@@ -47,9 +53,10 @@ Estimation (data2):
 cov.obj2 = cov_basis(data2$t, data2$y, data2$r, r2, lambda, ext, maxIt)
 C_est2 <- cov.obj2$C
 C_est2
+cov.obj2$error
 cov_est2 = predict_cov(regular_grid, C_est2)
 C_2 = matrix(0, nrow = r, ncol = r)
-diag(C_2) = seq(from = 10, by = -2, length.out = r)
+diag(C_2) = seq(from = 30, by = -8, length.out = r)
 C_2
 cov2 = predict_cov(regular_grid, C_2)
 mean((cov_est2 - cov2)^2)
@@ -70,16 +77,45 @@ Using both data:
 ```{r}
 cov.obj = cov_basis(data$t, data$y, data$r, r1, lambda, ext, maxIt)
 C_est <- cov.obj$C
+cov.obj$error
 cov_est = predict_cov(regular_grid, C_est, ext)
 mean((cov_est - cov1)^2)
 mean((cov_est - cov2)^2)
 mean((cov_est - (cov1+cov2)/2)^2)
 ```
 
+Using part of the data:
+```{r}
+cov.obj_whole <- cov_basis(data$t[1:100,], data$y[1:100,], data$r[,1:3000], r1, lambda, ext, maxIt)
+cov.obj_first <- cov_basis(data$t[1:50,], data$y[1:50,], data$r[,1:1500], r1, lambda, ext, maxIt)
+cov.obj_second <- cov_basis(data$t[51:100,], data$y[51:100,], data$r[, 1501:3000], r1, lambda, ext, maxIt)
+
+cov.obj_whole <- cov_basis(data$t[101:200,], data$y[101:200,], data$r[ ,3001:6000], r1, lambda, ext, maxIt)
+cov.obj_first <- cov_basis(data$t[101:150,], data$y[101:150,], data$r[ ,3001:4500], r1, lambda, ext, maxIt)
+cov.obj_second <- cov_basis(data$t[151:200,], data$y[151:100,], data$r[, 4501:6000], r1, lambda, ext, maxIt)
+
+cov.obj_whole$error
+cov.obj_first$error
+cov.obj_second$error
+
+
+cov.obj_whole$C
+cov.obj_first$C
+cov.obj_second$C
+
+C_est <- cov.obj$C
+cov_est = predict_cov(regular_grid, C_est, ext)
+mean((cov_est - cov1)^2)
+mean((cov_est - cov2)^2)
+mean((cov_est - (cov1+cov2)/2)^2)
+```
+
+
 Change point:
 ```{r}
-cpt_result = DP_fragment(data$t, data$y, data$r, r = 2, lambda, xi = 3.8, ext, maxIt, Delta=30)
+cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 5000, ext, maxIt, Delta=30)
 cpt_result$partition
+cpt_result$bestvalue
 part2local(cpt_result$partition)
 ```
 
