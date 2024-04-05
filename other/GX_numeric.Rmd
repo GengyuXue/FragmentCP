@@ -86,9 +86,9 @@ mean((cov_est - (cov1+cov2)/2)^2)
 
 Using part of the data:
 ```{r}
-cov.obj_whole <- cov_basis(data$t[1:100,], data$y[1:100,], data$r[,1:3000], r1, lambda, ext, maxIt)
-cov.obj_first <- cov_basis(data$t[1:50,], data$y[1:50,], data$r[,1:1500], r1, lambda, ext, maxIt)
-cov.obj_second <- cov_basis(data$t[51:100,], data$y[51:100,], data$r[, 1501:3000], r1, lambda, ext, maxIt)
+cov.obj_whole <- cov_basis(data$t[1:120,], data$y[1:120,], data$r[,1:3600], r1, lambda, ext, maxIt)
+cov.obj_first <- cov_basis(data$t[1:115,], data$y[1:115,], data$r[,1:3450], r1, lambda, ext, maxIt)
+cov.obj_second <- cov_basis(data$t[116:120,], data$y[116:120,], data$r[, 3451:3600], r1, lambda, ext, maxIt)
 
 cov.obj_whole <- cov_basis(data$t[101:200,], data$y[101:200,], data$r[ ,3001:6000], r1, lambda, ext, maxIt)
 cov.obj_first <- cov_basis(data$t[101:150,], data$y[101:150,], data$r[ ,3001:4500], r1, lambda, ext, maxIt)
@@ -113,7 +113,7 @@ mean((cov_est - (cov1+cov2)/2)^2)
 
 Change point:
 ```{r}
-cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 5000, ext, maxIt, Delta=30)
+cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 100000, ext, maxIt, Delta=15)
 cpt_result$partition
 cpt_result$bestvalue
 part2local(cpt_result$partition)
