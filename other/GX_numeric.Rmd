@@ -4,7 +4,7 @@ output: html_document
 date: "2024-04-03"
 ---
 ```{r}
-lambda = 0.00005
+lambda = 0.00001
 # lambda = 0.0001
 # lambda = 0
 ext = 0.05
@@ -19,12 +19,12 @@ regular_grid = seq(0.05, 0.95, length.out = 50)
 
 Simulate data: 
 ```{r}
-data1 = temp_fragment_data6(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.1, domain = c(0, 1), delta = 0.5)
-data2 = temp_fragment_data5(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.1, domain = c(0, 1), delta = 0.5)
+data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
 data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
 ```
 
-Estimatoin (data1):
+Estimatoin (data1 using temp_fragment_data6):
 ```{r}
 cov.obj1 = cov_basis(data1$t, data1$y, data1$r, r1, lambda, ext, maxIt) # estimate covariance function
 C_est1 <- cov.obj1$C
@@ -48,7 +48,7 @@ mean((cov_est1 - cov1)^2)
 ```
 
 
-Estimation (data2):
+Estimation (data2 using  temp_fragment_data5):
 ```{r}
 cov.obj2 = cov_basis(data2$t, data2$y, data2$r, r2, lambda, ext, maxIt)
 C_est2 <- cov.obj2$C
@@ -63,6 +63,36 @@ mean((cov_est2 - cov2)^2)
 #sum((cov_est2 - cov2)^2)/sum(cov2^2)
 ```
 
+
+Estimation (data 1 using temp_fragment_data7):
+```{r}
+cov.obj1 = cov_basis(data1$t, data1$y, data1$r, r1, lambda, ext, maxIt) # estimate covariance function
+C_est1 <- cov.obj1$C
+C_est1
+cov_est1 = predict_cov(regular_grid, C_est1)
+cov.obj1$error
+
+C_1 = matrix(0, nrow = r1, ncol = r1)
+diag(C_1) = seq(from = 2, by = -0.6, length.out = r1)
+C_1
+cov1 = predict_cov(regular_grid, C_1)
+# compare
+mean((cov_est1 - cov1)^2)
+```
+
+Estimation (data 2 using temp_fragment_data8):
+```{r}
+cov.obj2 = cov_basis(data2$t, data2$y, data2$r, r2, lambda, ext, maxIt)
+C_est2 <- cov.obj2$C
+C_est2
+cov.obj2$error
+cov_est2 = predict_cov(regular_grid, C_est2)
+C_2 = matrix(0, nrow = r, ncol = r)
+diag(C_2) = c(0,seq(from = 2, by = -0.6, length.out = r-1))
+C_2
+cov2 = predict_cov(regular_grid, C_2)
+mean((cov_est2 - cov2)^2)
+```
 
 
 
@@ -86,9 +116,11 @@ mean((cov_est - (cov1+cov2)/2)^2)
 
 Using part of the data:
 ```{r}
-cov.obj_whole <- cov_basis(data$t[1:120,], data$y[1:120,], data$r[,1:3600], r1, lambda, ext, maxIt)
-cov.obj_first <- cov_basis(data$t[1:115,], data$y[1:115,], data$r[,1:3450], r1, lambda, ext, maxIt)
-cov.obj_second <- cov_basis(data$t[116:120,], data$y[116:120,], data$r[, 3451:3600], r1, lambda, ext, maxIt)
+cov.obj_whole <- cov_basis(data$t, data$y, data$r, r1, lambda, ext, maxIt)
+cov.obj_first <- cov_basis(data$t[1:100,], data$y[1:100,], data$r[,1:3000], r1, lambda, ext, maxIt)
+cov.obj_second <- cov_basis(data$t[101:200,], data$y[101:200,], data$r[, 3001:6000], r1, lambda, ext, maxIt)
+
+cov.obj_whole$error - cov.obj_first$error - cov.obj_second$error
 
 cov.obj_whole <- cov_basis(data$t[101:200,], data$y[101:200,], data$r[ ,3001:6000], r1, lambda, ext, maxIt)
 cov.obj_first <- cov_basis(data$t[101:150,], data$y[101:150,], data$r[ ,3001:4500], r1, lambda, ext, maxIt)
@@ -110,10 +142,29 @@ mean((cov_est - cov2)^2)
 mean((cov_est - (cov1+cov2)/2)^2)
 ```
 
+```{r}
+lambda = 0.001
+cov.obj_whole <-  cov_basis(data$t, data$y, data$r, r1, lambda, ext, maxIt)
+cov.obj_first <- cov_basis(data$t[1:18,], data$y[1:18,], data$r[,1:540], r1, lambda, ext, maxIt)
+cov.obj_second <- cov_basis(data$t[19:200,], data$y[19:200,], data$r[, 541:6000], r1, lambda, ext, maxIt)
+cov.obj_whole$error -  275.3107234 - cov.obj_second$error
+cov.obj_whole$C
+```
+```{r}
+lambda = 0.00001
+cov.obj_whole <-  cov_basis(data$t[1:18,], data$y[1:18,], data$r[,1:540], r1, lambda, ext, maxIt)
+cov.obj_first <- cov_basis(data$t[1:16,], data$y[1:16,], data$r[,1:480], r1, lambda, ext, maxIt)
+cov.obj_second <- cov_basis(data$t[17:18,], data$y[17:18,], data$r[, 481:540], r1, lambda, ext, maxIt)
+cov.obj_first$error + cov.obj_second$error +130
+```
+
+
+
 
 Change point:
 ```{r}
-cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 100000, ext, maxIt, Delta=15)
+cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 1600, ext, maxIt, Delta=0)
+# cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 35000, ext, maxIt, Delta=1)
 cpt_result$partition
 cpt_result$bestvalue
 part2local(cpt_result$partition)
