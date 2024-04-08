@@ -187,7 +187,8 @@ Rcpp::List cov_basis(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& 
     arma::mat basis_mat = evaluate_basis(r, domain, ls);
     Lp.cols(i*m, (i+1)*m-1) = basis_mat * C * basis_mat.t();
   }
-  double error = arma::norm(Lr - Lp, "fro")*arma::norm(Lr - Lp, "fro")/(m*m);
+  double norm = arma::norm(Lr - Lp, "fro");
+  double error = norm*norm/(m*m);
   outList["C"] = C;
   outList["error"] = error;
   //outList["Lr"] = Lr;
@@ -198,27 +199,19 @@ Rcpp::List cov_basis(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& 
 }
 
 
-// // [[Rcpp::export]]
-// Rcpp::List error_gof(const int& s, const int& e, const Rcpp::List& Lt, const Rcpp::List& Ly, const int& r,
-//                  const double& lambda, const double& ext, const int& maxIt){
-//   Rcpp::List outList;
-//   Rcpp::List Lt_new(e-s+1);
-//   Rcpp::List Ly_new(e-s+1);
-//   for(int i = 0; i < e-s+1; ++i) {
-//     Lt_new[i] = Lt[i+s-1];
-//     Ly_new[i] = Ly[i+s-1];
-//   }
-//   Rcpp::List cov_obj_new = cov_basis(Lt_new, Ly_new, r, lambda, ext, maxIt);
-//   Rcpp::List Lr_new = cov_obj_new["Lr"];
-//   Rcpp::List Lp_new = cov_obj_new["Lp"];
-//   arma::mat C_new = cov_obj_new["C"];
-//   double error = 0.0;
-//   int sub_n = Lr_new.size();
-//   for(int i = 0; i < sub_n; ++i) {
-//     error += arma::norm(Rcpp::as<arma::mat>(Lr_new[i]) - Rcpp::as<arma::mat>(Lp_new[i]), "fro");
-//   }
-//   outList["C"] = C_new;
-//   outList["error"] = error;
-//   return outList;
-// }
+// [[Rcpp::export]]
+Rcpp::List error_seg_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& Lr, const int& r, const int& s, const int& e,
+                 const double& lambda, const double& ext, const int& maxIt){
+  int m = Lt.n_cols;
+  Rcpp::List outList;
+  arma::mat Lt_new = Lt.rows(s-1, e-1);
+  arma::mat Ly_new = Ly.rows(s-1, e-1);
+  arma::mat Lr_new = Lr.cols((s-1)*m, (e-1)*m-1);
+  Rcpp::List cov_obj_new = cov_basis(Lt_new, Ly_new, Lr_new, r, lambda, ext, maxIt);
+  arma::mat C_new = cov_obj_new["C"];
+  double error = cov_obj_new["error"];
+  outList["C"] = C_new;
+  outList["error"] = error;
+  return outList;
+}
 

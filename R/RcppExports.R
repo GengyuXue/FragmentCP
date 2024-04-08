@@ -41,6 +41,10 @@ cov_basis <- function(Lt, Ly, Lr, r, lambda, ext, maxIt) {
     .Call(`_FragmentCP_cov_basis`, Lt, Ly, Lr, r, lambda, ext, maxIt)
 }
 
+error_seg_fragment <- function(Lt, Ly, Lr, r, s, e, lambda, ext, maxIt) {
+    .Call(`_FragmentCP_error_seg_fragment`, Lt, Ly, Lr, r, s, e, lambda, ext, maxIt)
+}
+
 DP_fragment <- function(Lt, Ly, Lr, r, lambda, xi, ext, maxIt, Delta) {
     .Call(`_FragmentCP_DP_fragment`, Lt, Ly, Lr, r, lambda, xi, ext, maxIt, Delta)
 }

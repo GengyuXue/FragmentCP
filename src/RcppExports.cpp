@@ -166,6 +166,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// error_seg_fragment
+Rcpp::List error_seg_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& Lr, const int& r, const int& s, const int& e, const double& lambda, const double& ext, const int& maxIt);
+RcppExport SEXP _FragmentCP_error_seg_fragment(SEXP LtSEXP, SEXP LySEXP, SEXP LrSEXP, SEXP rSEXP, SEXP sSEXP, SEXP eSEXP, SEXP lambdaSEXP, SEXP extSEXP, SEXP maxItSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Lt(LtSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Ly(LySEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Lr(LrSEXP);
+    Rcpp::traits::input_parameter< const int& >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const int& >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const int& >::type e(eSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type ext(extSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxIt(maxItSEXP);
+    rcpp_result_gen = Rcpp::wrap(error_seg_fragment(Lt, Ly, Lr, r, s, e, lambda, ext, maxIt));
+    return rcpp_result_gen;
+END_RCPP
+}
 // DP_fragment
 Rcpp::List DP_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat& Lr, const int& r, const double& lambda, const double& xi, const double& ext, const int& maxIt, const int& Delta);
 RcppExport SEXP _FragmentCP_DP_fragment(SEXP LtSEXP, SEXP LySEXP, SEXP LrSEXP, SEXP rSEXP, SEXP lambdaSEXP, SEXP xiSEXP, SEXP extSEXP, SEXP maxItSEXP, SEXP DeltaSEXP) {
@@ -197,6 +216,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_FragmentCP_minimizeL", (DL_FUNC) &_FragmentCP_minimizeL, 5},
     {"_FragmentCP_C_hat", (DL_FUNC) &_FragmentCP_C_hat, 6},
     {"_FragmentCP_cov_basis", (DL_FUNC) &_FragmentCP_cov_basis, 7},
+    {"_FragmentCP_error_seg_fragment", (DL_FUNC) &_FragmentCP_error_seg_fragment, 9},
     {"_FragmentCP_DP_fragment", (DL_FUNC) &_FragmentCP_DP_fragment, 9},
     {NULL, NULL, 0}
 };
