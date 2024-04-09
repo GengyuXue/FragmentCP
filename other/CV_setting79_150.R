@@ -107,7 +107,7 @@ print(K_matrix)
 
 K_proportion_large <- sum(K_matrix > true_K_mat)/iteration
 K_proportion_small <- sum(K_matrix < true_K_mat)/iteration
-K_proportion_equal <- sum(K_matrix = true_K_mat)/iteration
+K_proportion_equal <- sum(K_matrix == true_K_mat)/iteration
 mean.diff_K <- mean(abs(K_matrix - true_K_mat))
 var.diff_K <- var(abs(K_matrix - true_K_mat)[1,])
 
