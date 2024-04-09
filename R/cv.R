@@ -62,7 +62,7 @@ error_test_fragment = function(Lt, Lr, s, e, C_mat){
   Lp_new = matrix(NA, m, (e-s+1)*m)
   for(i in s:e){
     basis_mat = evaluate_basis(r, c(0,1), Lt[i,])
-    Lp_new[,((i-s)*m+1):((i-s+1)*m)] = basis_mat %*% C_mat11 %*% t(basis_mat)
+    Lp_new[,((i-s)*m+1):((i-s+1)*m)] = basis_mat %*% C_mat %*% t(basis_mat)
   }
   norm = sum((Lr_new - Lp_new)^2)
   error = norm/(m*m)
