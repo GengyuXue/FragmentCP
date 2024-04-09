@@ -163,7 +163,7 @@ cov.obj_first$error + cov.obj_second$error +130
 
 Change point:
 ```{r}
-cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 1600, ext, maxIt, Delta=0)
+cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 700, ext, maxIt, Delta=0)
 # cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 35000, ext, maxIt, Delta=1)
 cpt_result$partition
 cpt_result$bestvalue

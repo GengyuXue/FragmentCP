@@ -15,7 +15,7 @@ Rcpp::List DP_fragment(const arma::mat& Lt, const arma::mat& Ly, const arma::mat
   arma::vec partition = arma::zeros<arma::vec>(n+1);
   bestvalue(0) = -xi;
   for(int i = 1; i < n+1; ++i){
-    Rcpp::Rcout << "i is" << std::endl << i << std::endl;
+    // Rcpp::Rcout << "i is" << std::endl << i << std::endl;
     bestvalue(i) = R_PosInf;
     for(int l = 1; l < i+1; ++l){
       //Rcpp::Rcout << "l is" << std::endl << l << std::endl;
