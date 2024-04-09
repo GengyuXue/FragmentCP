@@ -48,7 +48,7 @@ CV_fragment = function(Lt, Ly, Lr, r, lambda, xi, ext, maxIt){
     C_mat[[col]] = trainmat[1,col]$C
     training_loss[,col] = as.numeric(trainmat[2,col]$error)
   }
-  validationmat = sapply(1:(len+1), function(index) error_test_fragment(validation_Lt, validation_Lr, interval[index,1], interval[index,2], C_mat[[index]]))
+  validationmat = sapply(1:(len+1), function(index) error_test_fragment(validation_Lt, validation_Lr, r, interval[index,1], interval[index,2], C_mat[[index]]))
   result = list(cpt_hat = init_cpt, K_hat = len, test_error = sum(validationmat), train_error = sum(training_loss))
   return(result)
 }
@@ -56,7 +56,7 @@ CV_fragment = function(Lt, Ly, Lr, r, lambda, xi, ext, maxIt){
 
 
 #' @noRd
-error_test_fragment = function(Lt, Lr, s, e, C_mat){
+error_test_fragment = function(Lt, Lr, r, s, e, C_mat){
   m = ncol(Lt)
   Lr_new = Lr[,as.vector(sapply(s:e, function(i){(m*(i-1)+1):(m*i)}))]
   Lp_new = matrix(NA, m, (e-s+1)*m)
