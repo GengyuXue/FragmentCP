@@ -14,34 +14,42 @@ CV_fragment = function(Lt, Ly, Lr, r, lambda, xi, ext, maxIt){
   train_result = DP_fragment(train_Lt, train_Ly, train_Lr, r, lambda, xi, ext, maxIt, Delta=0)
   init_cpt_train = part2local(train_result$partition)
   init_cpt_train.long = c(0, init_cpt_train, nrow(train_Lt))
-  diff.point = diff(init_cpt_train.long)
-  if (length(which(diff.point == 1)) > 0){
-    print(paste("xi =", xi,",", "lambda =", lambda, ".","Warning: Consecutive points detected. Try a larger xi."))
-    init_cpt = odd_indexes[init_cpt_train]
-    len = length(init_cpt)
-    result = list(cpt_hat = init_cpt, K_hat = len, test_error = Inf, train_error = Inf)
-  }
-  else{
-    init_cpt = odd_indexes[init_cpt_train]
-    len = length(init_cpt)
-    init_cpt_long = c(init_cpt_train, floor(n/2))
-    interval = matrix(0, nrow = len+1, ncol = 2)
-    interval[1,] = c(1, init_cpt_long[1])
-    if(len > 0){
-      for(j in 2:(1+len)){
-        interval[j,] = c(init_cpt_long[j-1]+1, init_cpt_long[j])
-      }
+  diff_point = diff(init_cpt_train.long)
+  init_cpt_update = 0
+  flag = 1
+  for(i in 1:length(diff_point)){
+    if(flag == 1){
+      gap = diff_point[i]
+    }else{
+      gap = gap + diff_point[i]
     }
-    trainmat = sapply(1:(len+1), function(index) error_seg_fragment(train_Lt, train_Ly, train_Lr, r, interval[index,1], interval[index,2], lambda, ext, maxIt))
-    C_mat = vector("list", len+1)
-    training_loss = matrix(0, nrow = 1, ncol = len+1)
-    for(col in 1:(len+1)){
-      C_mat[[col]] = as.numeric(trainmat[2,col]$C)
-      training_loss[,col] = as.numeric(trainmat[1,col]$error)
+    if(gap >= 10){
+      cpt_temp = init_cpt_update[length(init_cpt_update)] + gap
+      init_cpt_update = c(init_cpt_update, cpt_temp)
+      flag = 1
+    }else{
+      flag = 0
     }
-    validationmat = sapply(1:(len+1), function(index) error_test_fragment(validation_Lt, validation_Lr, interval[index,1], interval[index,2], C_mat[[index]]))
-    result = list(cpt_hat = init_cpt, K_hat = len, test_error = sum(validationmat), train_error = sum(training_loss))
   }
+  init_cpt = odd_indexes[init_cpt_update[c(-1, -length(init_cpt_update))]]
+  len = length(init_cpt)
+  init_cpt_long = c(init_cpt_update[c(-1, -length(init_cpt_update))], floor(n/2))
+  interval = matrix(0, nrow = len+1, ncol = 2)
+  interval[1,] = c(1, init_cpt_long[1])
+  if(len > 0){
+    for(j in 2:(1+len)){
+      interval[j,] = c(init_cpt_long[j-1]+1, init_cpt_long[j])
+    }
+  }
+  trainmat = sapply(1:(len+1), function(index) error_seg_fragment(train_Lt, train_Ly, train_Lr, r, interval[index,1], interval[index,2], lambda, ext, maxIt))
+  C_mat = vector("list", len+1)
+  training_loss = matrix(0, nrow = 1, ncol = len+1)
+  for(col in 1:(len+1)){
+    C_mat[[col]] = trainmat[1,col]$C
+    training_loss[,col] = as.numeric(trainmat[2,col]$error)
+  }
+  validationmat = sapply(1:(len+1), function(index) error_test_fragment(validation_Lt, validation_Lr, interval[index,1], interval[index,2], C_mat[[index]]))
+  result = list(cpt_hat = init_cpt, K_hat = len, test_error = sum(validationmat), train_error = sum(training_loss))
   return(result)
 }
 
@@ -54,10 +62,10 @@ error_test_fragment = function(Lt, Lr, s, e, C_mat){
   Lp_new = matrix(NA, m, (e-s+1)*m)
   for(i in s:e){
     basis_mat = evaluate_basis(r, c(0,1), Lt[i,])
-    Lp_new[,((i-1)*m+1):(i*m)] = basis_mat * C_mat * t(basis_mat)
+    Lp_new[,((i-s)*m+1):((i-s+1)*m)] = basis_mat %*% C_mat11 %*% t(basis_mat)
   }
-  norm = sum((Lr - Lp)^2)
-  error = norm*norm/(m*m);
+  norm = sum((Lr_new - Lp_new)^2)
+  error = norm/(m*m)
   return(error)
 } 
 

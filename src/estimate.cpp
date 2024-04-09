@@ -206,7 +206,7 @@ Rcpp::List error_seg_fragment(const arma::mat& Lt, const arma::mat& Ly, const ar
   Rcpp::List outList;
   arma::mat Lt_new = Lt.rows(s-1, e-1);
   arma::mat Ly_new = Ly.rows(s-1, e-1);
-  arma::mat Lr_new = Lr.cols((s-1)*m, (e-1)*m-1);
+  arma::mat Lr_new = Lr.cols((s-1)*m, e*m-1);
   Rcpp::List cov_obj_new = cov_basis(Lt_new, Ly_new, Lr_new, r, lambda, ext, maxIt);
   arma::mat C_new = cov_obj_new["C"];
   double error = cov_obj_new["error"];

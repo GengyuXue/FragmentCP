@@ -170,7 +170,14 @@ cpt_result$bestvalue
 part2local(cpt_result$partition)
 ```
 
-
+CV:
+```{r}
+CV_cpt_result = CV_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 800, ext, maxIt)
+# cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 35000, ext, maxIt, Delta=1)
+cpt_result$partition
+cpt_result$bestvalue
+part2local(cpt_result$partition)
+```
 
 
 
