@@ -34,8 +34,8 @@ maxIt = 1
 r1 = 3
 r2 = 3
 r = 3
-sigma1 = 1
-sigma2 = 1
+sigma1 = 2
+sigma2 = 3
 lambda <- c(0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001)
 iteration <- 100
 
@@ -48,6 +48,22 @@ error_matrix_diff <- matrix(0, nrow = iteration, ncol = length(lambda))
 for (j in 1:iteration) {
   data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.00001, domain = c(0, 1), delta = 0.5)
   data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.00001, domain = c(0, 1), delta = 0.5)
+  data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
+  for (i in 1:length(lambda)) {
+    cov.obj1 = cov_basis(data1$t, data1$y, data1$r, r1, lambda[i], ext, maxIt)
+    cov.obj2 = cov_basis(data2$t, data2$y, data2$r, r2, lambda[i], ext, maxIt)
+    cov.obj_whole = cov_basis(data$t, data$y, data$r, r, lambda[i], ext, maxIt)
+    
+    error_matrix1[j,i] <- cov.obj1$error
+    error_matrix2[j,i] <- cov.obj2$error
+    error_matrix_whole[j,i] <- cov.obj_whole$error
+    error_matrix_diff[j,i] <- cov.obj_whole$error - cov.obj1$error - cov.obj2$error
+  }
+}
+
+for (j in 1:iteration) {
+  data1 = temp_fragment_data11(mu = 0, sigma1, n = 100, m = 30, sigma_epsilon = 0.00001, domain = c(0, 1), delta = 0.5)
+  data2 = temp_fragment_data12(mu = 0, sigma2, n = 100, m = 30, sigma_epsilon = 0.00001, domain = c(0, 1), delta = 0.5)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
   for (i in 1:length(lambda)) {
     cov.obj1 = cov_basis(data1$t, data1$y, data1$r, r1, lambda[i], ext, maxIt)

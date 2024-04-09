@@ -150,6 +150,7 @@ cov.obj_second <- cov_basis(data$t[19:200,], data$y[19:200,], data$r[, 541:6000]
 cov.obj_whole$error -  275.3107234 - cov.obj_second$error
 cov.obj_whole$C
 ```
+
 ```{r}
 lambda = 0.00001
 cov.obj_whole <-  cov_basis(data$t[1:18,], data$y[1:18,], data$r[,1:540], r1, lambda, ext, maxIt)
@@ -161,9 +162,25 @@ cov.obj_first$error + cov.obj_second$error +130
 
 
 
+```{r}
+lambda = 0.00001
+# lambda = 0.0001
+# lambda = 0
+ext = 0.1
+maxIt = 1
+r1 = 2
+r2 = 3
+sigma2 = 5
+Delta = 50
+regular_grid = seq(0.05, 0.95, length.out = 50)
+data1 = temp_fragment_data11(mu = 0, sigma1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data2 = temp_fragment_data12(mu = 0, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
+```
+
 Change point:
 ```{r}
-cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 700, ext, maxIt, Delta=0)
+cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 1000, ext, maxIt, Delta=0)
 # cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 35000, ext, maxIt, Delta=1)
 cpt_result$partition
 cpt_result$bestvalue
@@ -172,12 +189,69 @@ part2local(cpt_result$partition)
 
 CV:
 ```{r}
-xi_set = c(900, 1000, 1100, 1200, 1300, 1400, 1500, 1600)
+xi_set = c(1700, 1900,2100, 2200, 2300, 2500, 2700)
 CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
 min_idx = which.min(CV_cpt_result$test_error) 
 xi_set[min_idx]
 cpt_init = unlist(CV_cpt_result$cpt_hat[min_idx])
+cpt_init
 ```
+
+
+
+
+
+Case with two change points(7,9,10):
+```{r}
+lambda = 0.00001
+# lambda = 0.0001
+# lambda = 0
+ext = 0.1
+maxIt = 1
+r1 = 3
+r2 = 3
+sigma1 = 1
+sigma2 = 1
+Delta = 50
+regular_grid = seq(0.05, 0.95, length.out = 50)
+```
+
+Simulate data: 
+```{r}
+data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data3 = temp_fragment_data10(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data = list("t"= rbind(data1$t, data2$t, data3$t), "y" = rbind(data1$y, data2$y, data3$y), "r" = cbind(data1$r, data2$r, data3$r))
+```
+
+Change point:
+```{r}
+cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 1000, ext, maxIt, Delta=0)
+# cpt_result = DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi = 35000, ext, maxIt, Delta=1)
+cpt_result$partition
+cpt_result$bestvalue
+part2local(cpt_result$partition)
+```
+
+```{r}
+# xi_set = c(900, 1000, 1100, 1200, 1300, 1400, 1500, 1600)
+# xi_set = c(700, 800, 900)
+xi_set = c(350, 400, 500, 600, 700, 800)
+CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
+min_idx = which.min(CV_cpt_result$test_error) 
+xi_set[min_idx]
+cpt_init = unlist(CV_cpt_result$cpt_hat[min_idx])
+cpt_init
+```
+
+
+
+
+
+
+
+
+
 
 
 
