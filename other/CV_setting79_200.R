@@ -1,6 +1,6 @@
 library(FragmentCP)
 library(changepoints)
-set.seed(1376)
+set.seed(2000)
 
 temp_fragment_data7 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
   Ly <- matrix(0, n, m)
@@ -74,7 +74,7 @@ r2 = 3
 sigma1 = 1
 sigma2 = 1
 
-iteration <- 2
+iteration <- 100
 true_K <- 1
 true_change <- 200
 true_K_mat <- matrix(true_K, nrow = 1, ncol = iteration)
