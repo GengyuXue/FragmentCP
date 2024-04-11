@@ -246,7 +246,12 @@ cpt_init
 ```
 
 
-
+```{r}
+n = 300
+s_intervals = seeded_intervals(n, 30)
+temp_fragment = SBS_fragment(data$t, data$y, data$r, r = 3, lambda, ext, maxIt, 0, n, s_intervals[,1], s_intervals[,2], 30)
+thresholdBS(temp_fragment, 1000)
+```
 
 
 
