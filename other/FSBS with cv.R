@@ -22,7 +22,7 @@ for(i in 1:Tb){
   nts[i] = m
 }
 N_t=sum(nts)
-N_t
+# N_t
 
 dat <- matrix(NaN, nrow = N_t, ncol = 3)
 
@@ -49,11 +49,11 @@ for (i in 1:Tb) {
 dat[, 1] <- labels_Ts
 dat[, 2] <- t_vector
 dat[, 3] <- y_vector
-dat
+# dat
 
 #The choice of bandwidth h_bar
 H_bar_stimated=hpi(dat[,2])
-H_bar_stimated
+# H_bar_stimated
 h_bar=H_bar_stimated
 
 ######################################################
@@ -87,7 +87,8 @@ g_hat_i=function(eta1,eta2,h,x,dat_train,h_bar,phat)
 #We create the possible values for h and tau
 h_int= 0.2
 # h_int=seq(0.79,0.81, 0.01)
-tau_int=c(10,11,12)
+tau_int=c(9,10,12)
+# tau_int=c(9,11,12)
 # tau_int=c(1.08)
 l_tau_int=length(tau_int)
 
@@ -118,21 +119,20 @@ CP_cv <- list()
             X_t=dat_test[indices,2:(d+1)]
             Y_t=dat_test[indices,(d+2):(d+2)]
             phat=p_hat(X_t[i],dat_train,h_bar,d)
-            error=error+(g_hat_i(S[j],S[j+1],h_int[ind1],X_t[i],dat_train,h_bar,phat)-Y_t[i])^2
+            error=error+(g_hat_i(S[j],S[j+1],h_int,X_t[i],dat_train,h_bar,phat)-Y_t[i])^2
           }
         }
       }
-      errors[ind1,ind2]=error
+      errors[1,ind]=error
     # }  
   }
 min_error=min(errors)
-tau_min=which(errors==min_error)
-tau_min=tau_int[tau_min]
+tau_min=min(which(errors==min_error))
+# tau_min=tau_int[tau_min]
+K_cv[tau_min]
+CP_cv[tau_min]
 
 
-
-
-S=seedBS(dat_train, s.inter_train, 0.01, 5, tau_int[ind2], d, m)
 
 
 
