@@ -80,6 +80,8 @@ true_change <- 100
 true_K_mat <- matrix(true_K, nrow = 1, ncol = iteration)
 
 
+
+
 K_matrix <- matrix(0, nrow = 1, ncol = iteration)
 Hausdroff_distance <- matrix(0, nrow = 1, ncol = iteration)
 
