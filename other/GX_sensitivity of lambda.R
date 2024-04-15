@@ -9,12 +9,13 @@ error_matrix <- matrix(0, nrow = iteration, ncol = length(lambda))
 for (j in 1:iteration) {
   data = temp_fragment_data9(mu = 0, r = r, sigma, n = 100, 
                              m = 30, sigma_epsilon = 0.00001,
-                             domain = c(0, 1), delta = 0.5)
+                             domain = c(0, 1), delta = 1)
   for (i in 1:length(lambda)) {
     cov.obj = cov_basis(data$t, data$y, data$r, r, lambda[i], ext, maxIt)
     error_matrix[j,i] <- cov.obj$error
   }
 }
+
 
 error_matrix
 
