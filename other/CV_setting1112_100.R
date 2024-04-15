@@ -1,6 +1,6 @@
 library(FragmentCP)
 library(changepoints)
-set.seed(900)
+set.seed(1500)
 
 cov_function1 <- function(t){
   temp <- sqrt(5)*(6*t^2-6*t+1)
@@ -114,7 +114,8 @@ for (i in 1:iteration) {
   data1 = temp_fragment_data11(mu = 0, sigma1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
   data2 = temp_fragment_data12(mu = 0, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
-  xi_set = c(1700, 1900,2100, 2200, 2300, 2500, 2700)
+  # xi_set = c(1700, 1900,2100, 2200, 2300, 2500, 2700)
+  xi_set = c(4900, 5500, 5900, 6200, 6500)
   CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
   min_idx = which.min(CV_cpt_result$test_error) 
   xi_set[min_idx]
