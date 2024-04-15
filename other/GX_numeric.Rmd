@@ -248,10 +248,12 @@ cpt_init
 
 
 ```{r}
-n = 300
-s_intervals = seeded_intervals(n, 30)
-temp_fragment = SBS_fragment(data$t, data$y, data$r, r = 3, lambda, ext, maxIt, 0, n, s_intervals[,1], s_intervals[,2], 30)
-thresholdBS(temp_fragment, 1000)
+zeta_set = c(700, 800, 900, 1000, 1100)
+CV_SBS_result = CV_search_SBS_fragment(data$t, data$y, data$r, r, lambda, ext, maxIt, zeta_set, Delta = 20)
+min_idx = which.min(CV_SBS_result$test_error) 
+zeta_set[min_idx]
+cpt_init = unlist(CV_SBS_result$cpt_hat[min_idx])
+cpt_init
 ```
 
 

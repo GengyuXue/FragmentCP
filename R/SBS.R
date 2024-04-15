@@ -78,3 +78,60 @@ SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, s, e, Alpha, Beta, De
   class(result) = "BS"
   return(result)
 }
+
+
+# cross validation
+#' @export
+CV_SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, zeta, Delta = 20){
+  n = nrow(Lt)
+  m = ncol(Lt)
+  even_indexes = seq(2, n, 2)
+  odd_indexes = seq(1, n, 2)
+  train_Lt = Lt[odd_indexes,]
+  train_Ly = Ly[odd_indexes,]
+  train_Lr = Lr[, as.vector(sapply(odd_indexes, function(i){(m*(i-1)+1):(m*i)}))]
+  validation_Lt = Lt[even_indexes,]
+  validation_Ly = Ly[even_indexes,]
+  validation_Lr = Lr[, as.vector(sapply(even_indexes, function(i){(m*(i-1)+1):(m*i)}))]
+  s_intervals = seeded_intervals(length(odd_indexes), 30)
+  init_train = SBS_fragment(train_Lt, train_Ly, train_Lr, r, lambda, ext, maxIt, 0, length(odd_indexes), s_intervals[,1], s_intervals[,2], Delta)
+  init_train_cpt = thresholdBS(init_train, zeta)$cpt_hat[,1]
+  if(length(init_train_cpt) >= 1){
+    init_train_cpt_long = c(0, init_train_cpt, length(odd_indexes))
+    train_error = 0
+    test_error = 0
+    init_train_beta = NULL
+    for(k in 1:(length(init_train_cpt)+1)){
+      train_Lt_temp = train_Lt[(init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]),]
+      train_Ly_temp = train_Ly[(init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]),]
+      train_Lr_temp = train_Lr[,as.vector(sapply((init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]), function(i){(m*(i-1)+1):(m*i)}))]
+      test_Lt_temp = validation_Lt[(init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]),]
+      test_Ly_temp = validation_Ly[(init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]),]
+      test_Lr_temp = validation_Lr[,as.vector(sapply((init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]), function(i){(m*(i-1)+1):(m*i)}))]
+      train_temp = cov_basis(train_Lt_temp, train_Ly_temp, train_Lr_temp, r, lambda, ext, maxIt)
+      train_error = train_error + train_temp$error
+      test_error = test_error + error_test_fragment(test_Lt_temp, test_Lr_temp, r, 1, ncol(test_Lt_temp), train_temp$C)
+    }
+    init_cpt = odd_indexes[init_train_cpt]
+    K_hat = length(init_train_cpt)
+  }else{
+    init_cpt = init_train_cpt
+    K_hat = 0
+    train_temp = cov_basis(train_Lt, train_Ly, train_Lr, r, lambda, ext, maxIt)
+    train_error = train_temp$error
+    test_error = error_test_fragment(test_Lt, test_Lr, r, 1, ncol(test_Lt), train_temp$C)
+  }
+  result = list(cpt_hat = init_cpt, K_hat, test_error = test_error, train_error = train_error)
+  return(result)
+}
+
+#' @export
+CV_search_SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, zeta_set, Delta = 20){
+  output = sapply(1:length(zeta_set), function(j) CV_SBS_fragment(Lt, Ly, Lr, r, lambda, ext, maxIt, zeta_set[j], Delta))
+  cpt_hat = output[seq(1,4,4),]## estimated change points
+  K_hat = output[seq(2,4,4),]## number of estimated change points
+  test_error = output[seq(3,4,4),]## validation loss
+  train_error = output[seq(4,4,4),]## training loss                                                      
+  result = list(cpt_hat = cpt_hat, K_hat = K_hat, test_error = test_error, train_error = train_error)
+  return(result)
+}
