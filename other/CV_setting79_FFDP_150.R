@@ -1,6 +1,5 @@
 library(FragmentCP)
 library(changepoints)
-set.seed(2000)
 
 temp_fragment_data7 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
   Ly <- matrix(0, n, m)
@@ -85,11 +84,12 @@ Hausdroff_distance <- matrix(0, nrow = 1, ncol = iteration)
 
 
 for (i in 1:iteration) {
+  set.seed(1000+10*i)
   print(c("iteration",i))
   data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 150, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
   data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 150, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
-  xi_set = c(900, 1000, 1100, 1200, 1300, 1400, 1500, 1600)
+  xi_set = c(900, 1000, 1100, 1200, 1300)
   CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
   min_idx = which.min(CV_cpt_result$test_error) 
   xi_set[min_idx]

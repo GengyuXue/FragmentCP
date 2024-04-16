@@ -4,10 +4,6 @@ library(mvtnorm)
 library(FragmentCP)
 library(changepoints)
 
-#1000 when n = 200; 1100 when n=300; 1500 when n=400
-set.seed(1500)
-
-
 temp_fragment_data7 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
   Ly <- matrix(0, n, m)
   L <- domain[2] - domain[1]
@@ -84,20 +80,20 @@ sigma2 = 1
 C=3
 #dimension of data
 d=1
+iteration = 40
 
-iteration = 100
+
 true_K <- 1
-true_change <- c(0, 200, 400)
+true_change <- c(0, 100, 200)
 true_K_mat <- matrix(true_K, nrow = 1, ncol = iteration)
 K_matrix <- matrix(0, nrow = 1, ncol = iteration)
 Hausdroff_distance <- matrix(0, nrow = 1, ncol = iteration)
 
-
-
-for (l in 1:iteration) {
-  print(c("iteration",l))
-  data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 200, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
-  data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 200, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+for (l in 61:100) {
+  print(c("iteration", l))
+  set.seed(1000+10*l)
+  data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+  data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
   
   m = ncol(data$y)
@@ -171,7 +167,7 @@ for (l in 1:iteration) {
   
   #We create the possible values for h and tau
   h_int= 0.2
-  tau_int=c(9,10,12)
+  tau_int=c(10, 10.5)
   l_tau_int=length(tau_int)
   
   #We compute errors of estimation
@@ -217,21 +213,24 @@ for (l in 1:iteration) {
 }
 
 print(K_matrix)
+print(Hausdroff_distance)
+result <- list(K_diff = K_matrix, dist = Hausdroff_distance)
+write.csv(result, "CV_setting79_100_FSBS_61to100.csv")
 
-K_proportion_large <- sum(K_matrix > true_K_mat)/iteration
-K_proportion_small <- sum(K_matrix < true_K_mat)/iteration
-K_proportion_equal <- sum(K_matrix == true_K_mat)/iteration
-mean.diff_K <- mean(abs(K_matrix - true_K_mat))
-var.diff_K <- var(abs(K_matrix - true_K_mat)[1,])
-
-mean.Hausdroff_distance <- mean(Hausdroff_distance)
-var.Hausdroff.distance <- var(Hausdroff_distance[1,])
-
-result = list(cpt_dist_mean = mean.Hausdroff_distance,
-              cpt_dist_var = var.Hausdroff.distance,
-              K_diff_mean = mean.diff_K,
-              K_diff_var = var.diff_K,
-              K_proportion_large = K_proportion_large,
-              K_proportion_small = K_proportion_small,
-              K_proportion_equal = K_proportion_equal)
-print(result)
+# K_proportion_large <- sum(K_matrix > true_K_mat)/iteration
+# K_proportion_small <- sum(K_matrix < true_K_mat)/iteration
+# K_proportion_equal <- sum(K_matrix == true_K_mat)/iteration
+# mean.diff_K <- mean(abs(K_matrix - true_K_mat))
+# var.diff_K <- var(abs(K_matrix - true_K_mat)[1,])
+# 
+# mean.Hausdroff_distance <- mean(Hausdroff_distance)
+# var.Hausdroff.distance <- var(Hausdroff_distance[1,])
+# 
+# result = list(cpt_dist_mean = mean.Hausdroff_distance,
+#               cpt_dist_var = var.Hausdroff.distance,
+#               K_diff_mean = mean.diff_K,
+#               K_diff_var = var.diff_K,
+#               K_proportion_large = K_proportion_large,
+#               K_proportion_small = K_proportion_small,
+#               K_proportion_equal = K_proportion_equal)
+# print(result)

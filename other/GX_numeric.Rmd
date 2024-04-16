@@ -248,6 +248,7 @@ cpt_init
 
 
 ```{r}
+r=3
 zeta_set = c(700, 800, 900, 1000, 1100)
 CV_SBS_result = CV_search_SBS_fragment(data$t, data$y, data$r, r, lambda, ext, maxIt, zeta_set, Delta = 20)
 min_idx = which.min(CV_SBS_result$test_error) 

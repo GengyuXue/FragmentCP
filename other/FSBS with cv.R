@@ -11,8 +11,8 @@ C=3
 #dimension of data
 d=1
 
-data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
-data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data1 = temp_fragment_data7(mu = 0, r = r1, sigma1, n = 150, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+data2 = temp_fragment_data9(mu = 0, r = r2, sigma2, n = 150, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
 data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
 
 m = ncol(data$y)

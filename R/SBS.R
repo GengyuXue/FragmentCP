@@ -36,7 +36,7 @@ seeded_intervals = function(n, Delta){
 ## SBS
 #' @export
 SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, s, e, Alpha, Beta, Delta, level = 0){
-  print(paste0("SBS at level: ", level))
+  # print(paste0("SBS at level: ", level))
   Alpha_new = pmax(Alpha, s)
   Beta_new = pmin(Beta, e)
   idx = which(Beta_new - Alpha_new > 2*Delta)
@@ -110,7 +110,7 @@ CV_SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, zeta, Delta = 20){
       test_Lr_temp = validation_Lr[,as.vector(sapply((init_train_cpt_long[k]+1):(init_train_cpt_long[k+1]), function(i){(m*(i-1)+1):(m*i)}))]
       train_temp = cov_basis(train_Lt_temp, train_Ly_temp, train_Lr_temp, r, lambda, ext, maxIt)
       train_error = train_error + train_temp$error
-      test_error = test_error + error_test_fragment(test_Lt_temp, test_Lr_temp, r, 1, ncol(test_Lt_temp), train_temp$C)
+      test_error = test_error + error_test_fragment(test_Lt_temp, test_Lr_temp, r, 1, nrow(test_Lt_temp), train_temp$C)
     }
     init_cpt = odd_indexes[init_train_cpt]
     K_hat = length(init_train_cpt)
@@ -119,7 +119,7 @@ CV_SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, zeta, Delta = 20){
     K_hat = 0
     train_temp = cov_basis(train_Lt, train_Ly, train_Lr, r, lambda, ext, maxIt)
     train_error = train_temp$error
-    test_error = error_test_fragment(test_Lt, test_Lr, r, 1, ncol(test_Lt), train_temp$C)
+    test_error = error_test_fragment(validation_Lt, validation_Lr, r, 1, ncol(validation_Lt), train_temp$C)
   }
   result = list(cpt_hat = init_cpt, K_hat, test_error = test_error, train_error = train_error)
   return(result)
