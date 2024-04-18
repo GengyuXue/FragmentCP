@@ -1,4 +1,4 @@
-library(FragmentCP)
+# library(FragmentCP)
 
 ## Covariance function ##
 temp_fragment_data1 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
