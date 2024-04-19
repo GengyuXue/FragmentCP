@@ -368,7 +368,7 @@ temp_fragment_data14 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_eps
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
     C_mat = matrix(0, nrow = r, ncol = r)
-    diag(C_mat) = seq(from = 8, by = -1, length.out = r)
+    diag(C_mat) = seq(from = 8, by = -1.5, length.out = r)
     # print(C_mat)
     temp = evaluate_basis(r, c(0,1), tobs)
     Sigma_mat = temp %*% C_mat %*% t(temp)

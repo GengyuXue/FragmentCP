@@ -105,7 +105,7 @@ sigma2 = 1
 
 iteration <- 100
 true_K <- 2
-true_change <- c(0,50,125,200)
+true_change <- c(0,75,187,300)
 true_K_mat <- matrix(true_K, nrow = 1, ncol = iteration)
 
 
@@ -116,19 +116,20 @@ Hausdroff_distance <- matrix(0, nrow = 1, ncol = iteration)
 for (i in 1:iteration) {
   set.seed(1000+10*i)
   print(c("iteration",i))
-  data1 = temp_fragment_data13(mu = 0, r = 2, 1, n = 50, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
-  data2 = temp_fragment_data14(mu = 0, r = 2, 1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
-  data3 = temp_fragment_data15(mu = 0, r = 2, 1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data1 = temp_fragment_data13(mu = 0, r = 2, 1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data2 = temp_fragment_data14(mu = 0, r = 2, 1, n = 112, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data3 = temp_fragment_data15(mu = 0, r = 2, 1, n = 113, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
   
   data = list("t"= rbind(data1$t, data2$t, data3$t), "y" = rbind(data1$y, data2$y, data3$y), "r" = cbind(data1$r, data2$r, data3$r))
   
-  # xi_set = c(500, 550, 600, 650)
-  xi_set = c(400, 450, 500)
-
+  # xi_set = c(650, 700, 750, 800)
+  # xi_set = c(750, 800, 850, 900)
+  xi_set = c(900, 1200, 1300, 1400, 1500)
+  
   CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 2, lambda, xi_set, ext, maxIt)
   min_idx = which.min(CV_cpt_result$test_error) 
   xi_set[min_idx]
-  cpt_init = c(0, unlist(CV_cpt_result$cpt_hat[min_idx]), 200)
+  cpt_init = c(0, unlist(CV_cpt_result$cpt_hat[min_idx]), 300)
   
   print(cpt_init)
   K_init = unlist(CV_cpt_result$K_hat[min_idx])
@@ -145,8 +146,8 @@ K_proportion_equal <- sum(K_matrix == true_K_mat)/iteration
 mean.diff_K <- mean(abs(K_matrix - true_K_mat))
 sd.diff_K <- sqrt(var(abs(K_matrix - true_K_mat)[1,]))
 
-mean.Hausdroff_distance <- mean(Hausdroff_distance)/200
-sd.Hausdroff.distance <- sqrt(var(Hausdroff_distance[1,]/200))
+mean.Hausdroff_distance <- mean(Hausdroff_distance)/300
+sd.Hausdroff.distance <- sqrt(var(Hausdroff_distance[1,]/300))
 
 result = list(cpt_dist_mean = mean.Hausdroff_distance,
               cpt_dist_sd = sd.Hausdroff.distance,
