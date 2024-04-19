@@ -23,7 +23,7 @@ CV_fragment = function(Lt, Ly, Lr, r, lambda, xi, ext, maxIt){
     }else{
       gap = gap + diff_point[i]
     }
-    if(gap >= 10){
+    if(gap > 13){
       cpt_temp = init_cpt_update[length(init_cpt_update)] + gap
       init_cpt_update = c(init_cpt_update, cpt_temp)
       flag = 1
