@@ -261,6 +261,55 @@ cpt_init
 
 
 
+```{r}
+##TO DO
+RR = 200
+alpha = 0.05
+
+index_remove = which(len_cpt != length(cpt_true))
+sum(len_init[index_remove] < 1)/RR
+sum(len_init[index_remove] > 1)/RR
+if(length(index_remove)==0){
+  cpt_init_new = do.call(rbind, cpt_reg_init_list)
+  cpt_LR_new = do.call(rbind, cpt_reg_LR_list)
+  beta_reg_list_new = beta_reg_list
+  y_list_new = y_list
+  x_list_new = x_list
+}else{
+  cpt_reg_init_new = do.call(rbind, cpt_reg_init[-index_remove])
+  cpt_reg_LR_new = do.call(rbind, cpt_reg_LR[-index_remove])
+  beta_reg_list_new = beta_reg_hat[-index_remove]
+  y_list_new = y_list[-index_remove]
+  x_list_new = x_list[-index_remove]
+}
+LRV_reg_hat_mat = matrix(NA, nrow = nrow(cpt_reg_init_new), ncol = length(cpt_true))
+kappa2_reg_hat_mat = matrix(NA, nrow = nrow(cpt_reg_init_new), ncol = length(cpt_true))
+drift_reg_hat_mat = matrix(NA, nrow = nrow(cpt_reg_init_new), ncol = length(cpt_true))
+B = 1000
+u_array = array(NA, c(nrow(cpt_reg_init_new), length(cpt_true), B))
+CI_array = array(NA, c(nrow(cpt_reg_init_new), length(cpt_true), 2))
+for(i in 1:nrow(cpt_reg_init_new)){
+  y_vec = y_list_new[[i]]
+  x_mat = x_list_new[[i]]
+  interval_refine = trim_interval(n = length(y_vec), cpt_reg_init_new[i,], w = 0.9)
+  block_size = ceiling((min(floor(interval_refine[,2]) - ceiling(interval_refine[,1])))^(2/5)/2) # choose S
+  print(block_size)
+  temp = LRV.reg(cpt_reg_init_new[i,], beta_reg_list_new[[i]], y_vec, x_mat, w = 0.9, block_size)
+  LRV_reg_hat_mat[i,] = temp$lrv_hat
+  kappa2_reg_hat_mat[i,] = temp$kappa2_hat
+  #drift_hat_mat[i,] = sapply(1:nrow(interval_refine), function(x) t(beta_list_new[[i]][,x+1] - beta_list_new[[i]][,x]) %*% (t(cbind(rep(1,dim(data$X)[1]), data$X))%*%cbind(rep(1,dim(data$X)[1]), data$X)) %*% (beta_list_new[[i]][,x+1] - beta_list_new[[i]][,x]) / (n*kappa2_hat_mat[i,][x]))
+  for(j in 1:length(cpt_true)){
+    for(b in 1:B){
+      set.seed(543+b+i*100+j*12345)
+      u_array[i,j,b] = seq(-n, n)[which.min(simu.2BM_Drift(length(y_vec), 0.15, LRV_reg_hat_mat[i,j]))] # the value should decrease as n increases
+    }
+    CI_array[i,j,] = quantile(u_array[i,j,], probs = c(alpha/2, 1-alpha/2))/kappa2_reg_hat_mat[i,j] + cpt_reg_LR_new[i,j]
+  }
+}
+sum(floor(CI_array[,1,1]) <= cpt_true[1]-1 & ceiling(CI_array[,1,2]) >= cpt_true[1]-1)/nrow(cpt_reg_init_new)
+mean(ceiling(CI_array[,1,2]) - floor(CI_array[,1,1]))
+sd(ceiling(CI_array[,1,2]) - floor(CI_array[,1,1]))
+```
 
 
 
