@@ -1,6 +1,3 @@
-
-
-
 # simulate two-sided Brownian motion with drift
 #' @export
 simu.2BM_Drift = function(n, drift, LRV){
@@ -18,21 +15,26 @@ local_refine_fragment = function(Lt, Ly, Lr, cpt_init_hat, r, lambda, ext, maxIt
   Khat = length(cpt_init_hat)
   cpt_hat_long = c(0, cpt_init_hat, n)
   cpt_refined = rep(0, Khat+1)
-  for(i in 1:(Khat_rkhs+1)){
-    Lt_se = Lt[(cpt_rkhs_hat_long[i]+1):cpt_rkhs_hat_long[i+1],]
-    Ly_se = Ly[(cpt_rkhs_hat_long[i]+1):cpt_rkhs_hat_long[i+1],]
-    Lr_se = Lr[,as.vector(sapply((cpt_rkhs_hat_long[i]+1):cpt_rkhs_hat_long[i+1], function(i){(m*(i-1)+1):(m*i)}))]
+  C_hat_list <- vector("list", Khat+1)
+  for(i in 1:(Khat+1)){
+    Lt_se = Lt[(cpt_hat_long[i]+1):cpt_hat_long[i+1],]
+    Ly_se = Ly[(cpt_hat_long[i]+1):cpt_hat_long[i+1],]
+    Lr_se = Lr[,as.vector(sapply((cpt_hat_long[i]+1):cpt_hat_long[i+1], function(i){(m*(i-1)+1):(m*i)}))]
     C_hat_list[[i]] = cov_basis(Lt_se, Ly_se, Lr_se, r, lambda, ext, maxIt)$C
   }
   for (k in 1:Khat){
-    s = ceiling(w*cpt_init_long[k] + (1-w)*cpt_init_long[k+1])
-    e = floor((1-w)*cpt_init_long[k+1] + w*cpt_init_long[k+2])
+    s = ceiling(w*cpt_hat_long[k] + (1-w)*cpt_hat_long[k+1])
+    e = floor((1-w)*cpt_hat_long[k+1] + w*cpt_hat_long[k+2])
     lower = s + 2
     upper = e - 2
-    Lt_se = Lt[s:eta,]
-    Ly_se = Ly[s:eta,]
-    Lr_se = Lr[,as.vector(sapply(s:eta, function(i){(m*(i-1)+1):(m*i)}))]
-    b = sapply(lower:upper, function(eta)(cov_basis(Lt[s:eta,], Ly[s:eta,], Lr[,as.vector(sapply(s:eta, function(i){(m*(i-1)+1):(m*i)}))], r, lambda, ext, maxIt)$error + cov_basis(Lt[(eta+1):e,], Ly[(eta+1):e,], Lr[,as.vector(sapply((eta+1):e, function(i){(m*(i-1)+1):(m*i)}))], r, lambda, ext, maxIt)$error))
+    # Lt_se = Lt[s:eta,]
+    # Ly_se = Ly[s:eta,]
+    # Lr_se = Lr[,as.vector(sapply(s:eta, function(i){(m*(i-1)+1):(m*i)}))]
+    # b = sapply(lower:upper, function(eta)(cov_basis(Lt[s:eta,], Ly[s:eta,], Lr[,as.vector(sapply(s:eta, function(i){(m*(i-1)+1):(m*i)}))], r, lambda, ext, maxIt)$error 
+    # + cov_basis(Lt[(eta+1):e,], Ly[(eta+1):e,], Lr[,as.vector(sapply((eta+1):e, function(i){(m*(i-1)+1):(m*i)}))], r, lambda, ext, maxIt)$error))
+    
+    b = sapply(lower:upper, function(eta) (error_test_fragment(Lt, Lr, r, s, eta,C_hat_list[[k]]) 
+                                           + error_test_fragment(Lt, Lr, r, eta+1, e, C_hat_list[[k+1]])))
     cpt_refined[k+1] = s + which.min(b)
   }
   return(cpt_refined[-1])

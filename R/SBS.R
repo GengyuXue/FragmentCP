@@ -97,7 +97,7 @@ CV_SBS_fragment = function(Lt, Ly, Lr, r, lambda, ext, maxIt, zeta, Delta = 20){
   init_train = SBS_fragment(train_Lt, train_Ly, train_Lr, r, lambda, ext, maxIt, 0, length(odd_indexes), s_intervals[,1], s_intervals[,2], Delta)
   init_train_cpt = thresholdBS(init_train, zeta)$cpt_hat[,1]
   if(length(init_train_cpt) >= 1){
-    init_train_cpt_long = c(0, init_train_cpt, length(odd_indexes))
+    init_train_cpt_long = c(0, init_train_cpt, length(even_indexes))
     train_error = 0
     test_error = 0
     init_train_beta = NULL
