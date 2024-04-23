@@ -91,7 +91,7 @@ sigma2_fragment = function(cpt_hat, kappa2_hat, C_list, Lt, Ly, Lr){
       Z1 = Lr[,(m*(j-1)+1):(m*j)] - Lp1
       z_before_vec[j-s] = sum(Z1*(Lp2-Lp1)/sqrt(kappa2))
     }
-    sig2_before_hat[k] = var(z_before_vec)/m^2
+    sig2_before_hat[k] = var(z_before_vec)
     for(j in (t+1):e){
       basis_mat = evaluate_basis(r, c(0,1), Lt[j,])
       Lp1 = basis_mat %*% C1_hat %*% t(basis_mat)
@@ -99,7 +99,7 @@ sigma2_fragment = function(cpt_hat, kappa2_hat, C_list, Lt, Ly, Lr){
       Z2 = Lr[,(m*(j-1)+1):(m*j)] - Lp2
       z_after_vec[j-t] = sum(Z2*(Lp2-Lp1)/sqrt(kappa2))
     }
-    sig2_after_hat[k] = var(z_after_vec)/m^2
+    sig2_after_hat[k] = var(z_after_vec)
   }
   return(list(sig2_before = sig2_before_hat, sig2_after = sig2_after_hat))
 }
