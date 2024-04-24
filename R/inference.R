@@ -1,9 +1,17 @@
 # simulate two-sided Brownian motion with drift
 #' @export
-simu.2BM_Drift = function(n, drift, LRV){
+simu.2BM_Drift = function(n, drift, LRV1, LRV2){
+  # 1: before 2:after
   z_vec = rnorm(2*n)
-  w_vec = c(rev(cumsum(z_vec[n:1])/sqrt(1:n)), 0, cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n))
-  v_vec = drift*abs(seq(-n, n)) + sqrt(LRV)*w_vec
+  w_vec1 = rev(cumsum(z_vec[n:1])/sqrt(1:n))
+  w_vec2 = cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n)
+  
+  v_vec1 = drift*abs(seq(-n, -1)) + sqrt(LRV1)*w_vec1
+  v_vec2 = drift*abs(seq(1, n)) + sqrt(LRV2)*w_vec2
+  
+  v_vec = c(v_vec1, 0, v_vec2)
+  # w_vec = c(rev(cumsum(z_vec[n:1])/sqrt(1:n)), 0, cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n))
+  # v_vec = drift*abs(seq(-n, n)) + sqrt(LRV)*w_vec
   return(v_vec)
 }
 
@@ -93,7 +101,7 @@ sigma2_fragment = function(cpt_hat, kappa2_hat, C_list, Lt, Ly, Lr){
       Z1 = Lr[,(m*(j-1)+1):(m*j)] - Lp1
       z_before_vec[j-s] = sum(Z1*(Lp2-Lp1)/sqrt(kappa2))
     }
-    sig2_before_hat[k] = var(z_before_vec)
+    sig2_before_hat[k] = 4*var(z_before_vec)
     for(j in (t+1):e){
       basis_mat = evaluate_basis(r, c(0,1), Lt[j,])
       Lp1 = basis_mat %*% C1_hat %*% t(basis_mat)
@@ -101,7 +109,7 @@ sigma2_fragment = function(cpt_hat, kappa2_hat, C_list, Lt, Ly, Lr){
       Z2 = Lr[,(m*(j-1)+1):(m*j)] - Lp2
       z_after_vec[j-t] = sum(Z2*(Lp2-Lp1)/sqrt(kappa2))
     }
-    sig2_after_hat[k] = var(z_after_vec)
+    sig2_after_hat[k] = 4*var(z_after_vec)
   }
   return(list(sig2_before = sig2_before_hat, sig2_after = sig2_after_hat))
 }
