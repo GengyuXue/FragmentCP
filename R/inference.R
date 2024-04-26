@@ -3,9 +3,12 @@
 simu.2BM_Drift = function(n, drift, LRV1, LRV2){
   # 1: before 2:after
   z_vec = rnorm(2*n)
-  w_vec1 = rev(cumsum(z_vec[n:1])/sqrt(1:n))
-  w_vec2 = cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n)
+  w_vec1 = rev(cumsum(z_vec[n:1]))
+  w_vec2 = cumsum(z_vec[(n+1):(2*n)])
   
+  # w_vec1 = rev(cumsum(z_vec[n:1])/sqrt(1:n))
+  # w_vec2 = cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n)
+
   v_vec1 = drift*abs(seq(-n, -1)) + sqrt(LRV1)*w_vec1
   v_vec2 = drift*abs(seq(1, n)) + sqrt(LRV2)*w_vec2
   

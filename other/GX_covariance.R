@@ -288,7 +288,7 @@ temp_fragment_data9 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsi
   return(R)
 }
 
-temp_fragment_data10 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
+# temp_fragment_data10 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
   Ly <- matrix(0, n, m)
   L <- domain[2] - domain[1]
   a_vec <- runif(n, min = domain[1], max = domain[2] - delta * L)
@@ -368,7 +368,7 @@ temp_fragment_data13 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_eps
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
     C_mat = matrix(0, nrow = r, ncol = r)
-    diag(C_mat) = c(0.5, seq(from = 2.1, by = -0.5, length.out = r-1))
+    diag(C_mat) = c(3.5, seq(from = 3, by = -0.6, length.out = r-1))
     # print(C_mat)
     temp = evaluate_basis(r, c(0,1), tobs)
     Sigma_mat = temp %*% C_mat %*% t(temp)
