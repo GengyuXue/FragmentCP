@@ -1,20 +1,16 @@
 # simulate two-sided Brownian motion with drift
 #' @export
-simu.2BM_Drift = function(n, drift, LRV1, LRV2){
+simu.2BM_Drift = function(n, M, drift, LRV1, LRV2){
   # 1: before 2:after
-  z_vec = rnorm(2*n)
-  w_vec1 = rev(cumsum(z_vec[n:1]))
-  w_vec2 = cumsum(z_vec[(n+1):(2*n)])
+  z_vec = rnorm(2*n*M)
   
-  # w_vec1 = rev(cumsum(z_vec[n:1])/sqrt(1:n))
-  # w_vec2 = cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n)
-
-  v_vec1 = drift*abs(seq(-n, -1)) + sqrt(LRV1)*w_vec1
-  v_vec2 = drift*abs(seq(1, n)) + sqrt(LRV2)*w_vec2
+  w_vec1 = rev(cumsum(z_vec[(n*M):1]))
+  w_vec2 = cumsum(z_vec[(n*M+1):(2*n*M)])
+  
+  v_vec1 = drift*abs(seq(-n*M, -1)) + sqrt(LRV1)*w_vec1*sqrt(n)
+  v_vec2 = drift*abs(seq(1, n*M)) + sqrt(LRV2)*w_vec2*sqrt(n)
   
   v_vec = c(v_vec1, 0, v_vec2)
-  # w_vec = c(rev(cumsum(z_vec[n:1])/sqrt(1:n)), 0, cumsum(z_vec[(n+1):(2*n)])/sqrt(1:n))
-  # v_vec = drift*abs(seq(-n, n)) + sqrt(LRV)*w_vec
   return(v_vec)
 }
 

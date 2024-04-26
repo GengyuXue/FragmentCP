@@ -1,6 +1,6 @@
 library(FragmentCP)
 
-temp_fragment_data7 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
+temp_fragment_data10 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
   Ly <- matrix(0, n, m)
   L <- domain[2] - domain[1]
   a_vec <- runif(n, min = domain[1], max = domain[2] - delta * L)
@@ -16,7 +16,7 @@ temp_fragment_data7 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsi
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
     C_mat = matrix(0, nrow = r, ncol = r)
-    diag(C_mat) = seq(from = 2, by = -0.6, length.out = r)
+    diag(C_mat) = c(0.5, seq(from = 2, by = -0.6, length.out = r-1))
     # print(C_mat)
     temp = evaluate_basis(r, c(0,1), tobs)
     Sigma_mat = temp %*% C_mat %*% t(temp)
@@ -32,7 +32,7 @@ temp_fragment_data7 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsi
   return(R)
 }
 
-temp_fragment_data9 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
+temp_fragment_data13 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsilon = 1, domain = c(0, 1), delta = 0.3){
   Ly <- matrix(0, n, m)
   L <- domain[2] - domain[1]
   a_vec <- runif(n, min = domain[1], max = domain[2] - delta * L)
@@ -48,7 +48,7 @@ temp_fragment_data9 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsi
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
     C_mat = matrix(0, nrow = r, ncol = r)
-    diag(C_mat) = c(seq(from = 5, by = -0.8, length.out = r))
+    diag(C_mat) = c(3.5, seq(from = 3, by = -0.6, length.out = r-1))
     # print(C_mat)
     temp = evaluate_basis(r, c(0,1), tobs)
     Sigma_mat = temp %*% C_mat %*% t(temp)
@@ -65,7 +65,7 @@ temp_fragment_data9 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_epsi
 }
 
 
-iteration <- 300
+iteration <- 10
 r1 = 3
 r2 = 3
 lambda = 0.001
@@ -74,6 +74,8 @@ maxIt = 1
 B=1000
 alpha1 = 0.001
 alpha2 = 0.05
+n <- 500
+m <- 300
 CI_matrix1 <- matrix(NaN, nrow = iteration, ncol = 2)
 CI_matrix2 <- matrix(NaN, nrow = iteration, ncol = 2)
 
@@ -83,8 +85,9 @@ refined <- rep(0, iteration)
 for (l in 1:iteration) {
   print(c("iteration", l))
   set.seed(1000+100*l)
-  data1 = temp_fragment_data10(mu = 0, r = 3, sigma=1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
-  data2 = temp_fragment_data13(mu = 0, r = 3, sigma=1, n = 100, m = 30, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+  set.seed(90)
+  data1 = temp_fragment_data10(mu = 0, r = 3, sigma=1, n = 100, m = 20, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data2 = temp_fragment_data13(mu = 0, r = 3, sigma=1, n = 100, m = 20, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
   xi_set = c(450, 500)
   CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
@@ -117,7 +120,7 @@ for (l in 1:iteration) {
     d <- rep(0,B)
     for (b in 1:B) {
       set.seed(100+10*b+10*l)
-      d[b] <- seq(-280, 280)[which.min(simu.2BM_Drift1(280, drift, sigma_before, sigma_after))]
+      d[b] <- seq(-n*M, n*M)[which.min(simu.2BM_Drift(n, M, drift, sigma_before, sigma_after))]/n
     }
     print(quantile(d, probs = c(alpha1/2, 1-alpha1/2))/kappa2)
     print(quantile(d, probs = c(alpha2/2, 1-alpha2/2))/kappa2)
@@ -129,8 +132,8 @@ for (l in 1:iteration) {
 CI_matrix1 <- na.omit(CI_matrix1)
 CI_matrix2 <- na.omit(CI_matrix2)
 
-width1 <- rep(0, nrow(CI_matrix))
-width2 <- rep(0, nrow(CI_matrix))
+width1 <- rep(0, nrow(CI_matrix1))
+width2 <- rep(0, nrow(CI_matrix2))
 
 true_change <- 100
 
@@ -157,7 +160,7 @@ initial <- na.omit(initial)
 refined <- na.omit(refined)
 truth <- rep(true_change, length(initial))
 
-print(nrow(CI_matrix))
+print(nrow(CI_matrix1))
 dist_initial.mean <- mean(abs(initial - truth)/(2*true_change))
 dist_initial.sd <- sd(abs(initial - truth)/(2*true_change))
 
