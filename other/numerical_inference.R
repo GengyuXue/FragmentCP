@@ -16,7 +16,7 @@ temp_fragment_data10 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_eps
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
     C_mat = matrix(0, nrow = r, ncol = r)
-    diag(C_mat) = c(0.5, seq(from = 2, by = -0.6, length.out = r-1))
+    diag(C_mat) = c(0.8, seq(from = 2, by = -0.6, length.out = r-1))
     # print(C_mat)
     temp = evaluate_basis(r, c(0,1), tobs)
     Sigma_mat = temp %*% C_mat %*% t(temp)
@@ -48,7 +48,7 @@ temp_fragment_data13 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_eps
       mui <- rep(mu, length(tobs))
     else stop("mu must be a scalar or a function.")
     C_mat = matrix(0, nrow = r, ncol = r)
-    diag(C_mat) = c(3.5, seq(from = 3, by = -0.6, length.out = r-1))
+    diag(C_mat) = c(3.5, seq(from = 2.5, by = -0.6, length.out = r-1))
     # print(C_mat)
     temp = evaluate_basis(r, c(0,1), tobs)
     Sigma_mat = temp %*% C_mat %*% t(temp)
@@ -65,7 +65,7 @@ temp_fragment_data13 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_eps
 }
 
 
-iteration <- 10
+iteration <- 350
 r1 = 3
 r2 = 3
 lambda = 0.001
@@ -74,10 +74,12 @@ maxIt = 1
 B=1000
 alpha1 = 0.001
 alpha2 = 0.05
-n <- 500
-m <- 300
+n <- 900
+M <- 100
 CI_matrix1 <- matrix(NaN, nrow = iteration, ncol = 2)
 CI_matrix2 <- matrix(NaN, nrow = iteration, ncol = 2)
+
+true_change <- 75
 
 initial <- rep(0, iteration)
 refined <- rep(0, iteration)
@@ -85,18 +87,25 @@ refined <- rep(0, iteration)
 for (l in 1:iteration) {
   print(c("iteration", l))
   set.seed(1000+100*l)
-  set.seed(90)
-  data1 = temp_fragment_data10(mu = 0, r = 3, sigma=1, n = 100, m = 20, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
-  data2 = temp_fragment_data13(mu = 0, r = 3, sigma=1, n = 100, m = 20, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  # set.seed(90)
+  data1 = temp_fragment_data10(mu = 0, r = 3, sigma=1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data2 = temp_fragment_data13(mu = 0, r = 3, sigma=1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
-  xi_set = c(450, 500)
+  xi_set = c(250, 290)
   CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
   min_idx = which.min(CV_cpt_result$test_error) 
   xi_set[min_idx]
   cpt_init = unlist(CV_cpt_result$cpt_hat[min_idx])
   print(cpt_init)
   
-  if(length(cpt_init) != 1){
+  if(length(cpt_init) != 1){next}
+  else {
+  refined_eta <- local_refine_fragment(data$t, data$y, data$r, cpt_init,
+                                       r=3, lambda, ext = 0.1, maxIt = 1,
+                                       w = 0.75)
+  print(c("refined", refined_eta))
+  
+  if(abs(refined_eta - true_change) > 15){
     next
   }
   else{
@@ -106,7 +115,7 @@ for (l in 1:iteration) {
                                          r=3, lambda, ext = 0.1, maxIt = 1,
                                          w = 0.75)
     refined[l] <- refined_eta
-    print(c("refined", refined_eta))
+    
     # estimate jump size
     kappa2_list <-  kappa2_fragment(data$t, data$y, data$r, cpt_init, r=3, lambda, ext = 0.1, maxIt = 1)
     kappa2 <- kappa2_list$kappa2
@@ -129,13 +138,14 @@ for (l in 1:iteration) {
     CI_matrix2[l,] = quantile(d, probs = c(alpha2/2, 1-alpha2/2))/kappa2 + refined_eta
   }
 }
+}
 CI_matrix1 <- na.omit(CI_matrix1)
 CI_matrix2 <- na.omit(CI_matrix2)
 
 width1 <- rep(0, nrow(CI_matrix1))
 width2 <- rep(0, nrow(CI_matrix2))
 
-true_change <- 100
+
 
 count1 <- 0
 count2 <- 0
