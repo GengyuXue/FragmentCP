@@ -589,8 +589,8 @@ for (i in 1:100){
   print(c("iteration", i))
   set.seed(1000+10*i)
   
-  data1 = temp_fragment_data11(mu = 0, sigma1, n = 100, m = 40, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
-  data2 = temp_fragment_data12(mu = 0, sigma2, n = 100, m = 40, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.6)
+  data1 = temp_fragment_data11(mu = 0, sigma1, n = 100, m = 10, sigma_epsilon = 1, domain = c(0, 1), delta = 0.6)
+  data2 = temp_fragment_data12(mu = 0, sigma2, n = 100, m = 10, sigma_epsilon = 1, domain = c(0, 1), delta = 0.6)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
   
   data_smooth <- smooth_function(data, num_basis = 4, rangeval = c(0,1), no_grids = 50)
@@ -618,10 +618,10 @@ K_proportion_large <- sum(K_matrix > true_K_mat)/100
 K_proportion_small <- sum(K_matrix < true_K_mat)/100
 K_proportion_equal <- sum(K_matrix == true_K_mat)/100
 mean.diff_K <- mean(abs(K_matrix - true_K_mat))
-var.diff_K <- sqrt(var(abs(K_matrix - true_K_mat)[1,]/300))
+var.diff_K <- sqrt(var(abs(K_matrix - true_K_mat)[1,]))
 
-mean.Hausdroff_distance <- mean(Hausdroff_distance)/300
-var.Hausdroff.distance <- sqrt(var(Hausdroff_distance[1,]/300))
+mean.Hausdroff_distance <- mean(Hausdroff_distance)/200
+var.Hausdroff.distance <- sqrt(var(Hausdroff_distance[1,]/200))
 
 result = list(cpt_dist_mean = mean.Hausdroff_distance,
               cpt_dist_var = var.Hausdroff.distance,
@@ -632,6 +632,6 @@ result = list(cpt_dist_mean = mean.Hausdroff_distance,
               K_proportion_equal = K_proportion_equal)
 print(result)
 
-write.csv(result, "setting1112_WCUSUM_100_m40.csv")
+# write.csv(result, "setting1112_WCUSUM_100_m40.csv")
 
 

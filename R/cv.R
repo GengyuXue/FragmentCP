@@ -80,3 +80,20 @@ CV_search_DP_fragment = function(Lt, Ly, Lr, r, lambda, xi_set, ext, maxIt){
   result = list(cpt_hat = cpt_hat, K_hat = K_hat, test_error = test_error, train_error = train_error)
   return(result)
 }
+
+
+#' @export
+CV_search_DP_fragment_lambda_xi = function(Lt, Ly, Lr, r, lambda_set, xi_set, ext, maxIt){
+  change_point_list <- vector("list", length(lambda_set)+ length(xi_set))
+  test_error <- rep(0, length(lambda_set)*length(xi_set))
+  index <- 1
+  for (i in 1:length(lambda_set)) {
+    for (j in 1:length(xi_set)) {
+      output_temp <- CV_fragment(Lt, Ly, Lr, r, lambda_set[i], xi_set[j], ext, maxIt)
+      test_error[index] <- output_temp$test_error
+      change_point_list[[index]] <- output_temp$cpt_hat
+      index <- index + 1
+    }
+  }
+  return(list(cpt_hat = change_point_list, test_error = test_error))
+}

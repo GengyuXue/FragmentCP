@@ -64,8 +64,7 @@ temp_fragment_data13 <- function(mu = 0, r = 5, sigma, n = 100, m = 5, sigma_eps
   return(R)
 }
 
-
-iteration <- 350
+iteration <- 300
 r1 = 3
 r2 = 3
 lambda = 0.001
@@ -79,19 +78,19 @@ M <- 100
 CI_matrix1 <- matrix(NaN, nrow = iteration, ncol = 2)
 CI_matrix2 <- matrix(NaN, nrow = iteration, ncol = 2)
 
-true_change <- 75
+true_change <- 150
 
-initial <- rep(0, iteration)
-refined <- rep(0, iteration)
+initial <- rep(NaN, iteration)
+refined <- rep(NaN, iteration)
 
 for (l in 1:iteration) {
   print(c("iteration", l))
   set.seed(1000+100*l)
   # set.seed(90)
-  data1 = temp_fragment_data10(mu = 0, r = 3, sigma=1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
-  data2 = temp_fragment_data13(mu = 0, r = 3, sigma=1, n = 75, m = 15, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data1 = temp_fragment_data10(mu = 0, r = 3, sigma=1, n = 250, m = 10, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
+  data2 = temp_fragment_data13(mu = 0, r = 3, sigma=1, n = 250, m = 10, sigma_epsilon = 0.01, domain = c(0, 1), delta = 0.5)
   data = list("t"= rbind(data1$t, data2$t), "y" = rbind(data1$y, data2$y), "r" = cbind(data1$r, data2$r))
-  xi_set = c(250, 290)
+  xi_set = c(750, 800)
   CV_cpt_result = CV_search_DP_fragment(data$t, data$y, data$r, r = 3, lambda, xi_set, ext, maxIt)
   min_idx = which.min(CV_cpt_result$test_error) 
   xi_set[min_idx]
@@ -105,15 +104,12 @@ for (l in 1:iteration) {
                                        w = 0.75)
   print(c("refined", refined_eta))
   
-  if(abs(refined_eta - true_change) > 15){
+  if(abs(refined_eta - true_change) > 13){
     next
   }
   else{
     #local refinement
     initial[l] <- cpt_init
-    refined_eta <- local_refine_fragment(data$t, data$y, data$r, cpt_init,
-                                         r=3, lambda, ext = 0.1, maxIt = 1,
-                                         w = 0.75)
     refined[l] <- refined_eta
     
     # estimate jump size
@@ -134,8 +130,8 @@ for (l in 1:iteration) {
     print(quantile(d, probs = c(alpha1/2, 1-alpha1/2))/kappa2)
     print(quantile(d, probs = c(alpha2/2, 1-alpha2/2))/kappa2)
     
-    CI_matrix1[l,] = quantile(d, probs = c(alpha1/2, 1-alpha1/2))/kappa2 + refined_eta
-    CI_matrix2[l,] = quantile(d, probs = c(alpha2/2, 1-alpha2/2))/kappa2 + refined_eta
+    CI_matrix1[l,] = floor(quantile(d, probs = c(alpha1/2, 1-alpha1/2))/kappa2 + refined_eta)
+    CI_matrix2[l,] = ceiling(quantile(d, probs = c(alpha2/2, 1-alpha2/2))/kappa2 + refined_eta)
   }
 }
 }
@@ -191,6 +187,5 @@ result <- data.frame(dist_initial.mean, dist_initial.sd, dist_refined.mean, dist
 
 print(result)
   
-  
-  
+
   
