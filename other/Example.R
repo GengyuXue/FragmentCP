@@ -131,11 +131,11 @@ for (b in 1:B) {
 
 # CI by step 4
 CI_matrix_lower =  refined_eta - ceiling(quantile(d1, probs = 1-alpha1/2)/kappa2) 
-CI_matrix1_upper =  refined_eta - floor(quantile(d1, probs = alpha1/2)/kappa2)
+CI_matrix_upper =  refined_eta - floor(quantile(d1, probs = alpha1/2)/kappa2)
 
 # CI by step 4'
 CI_matrix_lower =  refined_eta - ceiling(quantile(d2, probs = 1-alpha1/2)/kappa2) 
-CI_matrix1_step4_upper =  refined_eta - floor(quantile(d2, probs = alpha1/2)/kappa2)
+CI_matrix_upper =  refined_eta - floor(quantile(d2, probs = alpha1/2)/kappa2)
 
 
 

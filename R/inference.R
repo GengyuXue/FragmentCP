@@ -31,6 +31,7 @@ simu.2BM_Drift_1LRV = function(n, M, drift, LRV1){
   return(v_vec)
 }
 
+
 # refined change point estimator
 #' @export
 local_refine_fragment = function(Lt, Ly, Lr, cpt_init_hat, r, lambda, ext, maxIt, w = 0.9){
